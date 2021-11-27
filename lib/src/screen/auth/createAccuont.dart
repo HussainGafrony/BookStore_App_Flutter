@@ -198,7 +198,7 @@ class _CreateAccountState extends State<CreateAccount> {
                         hintText: " password...",
                         hintStyle: GoogleFonts.openSans(
                             color: ColorsApp().lightprimarycolor),
-                        // helperText: 'Hussain'
+
                       ),
                     ),
                   ),
