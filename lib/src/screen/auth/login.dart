@@ -23,11 +23,13 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   FocusNode passwordFocus = FocusNode();
   bool passwordVisible = true;
   bool clicked = false;
   var _serviceEnabled;
   var _permissionGranted;
+  int count = 1;
 
   @override
   void initState() {
@@ -47,6 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         backgroundColor: Colors.white,
         body: ListView(
           children: [
@@ -209,6 +212,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderRadius: BorderRadius.circular(25),
                                 ),
                                 onPressed: () async {
+
+                                  setState(() {
+
+                                    clicked = true;
+                                    count++;
+                                  });
                                   if (emailController.text.isEmpty) {
                                     BotToast.showSimpleNotification(
                                         title: 'email empty ',
@@ -218,28 +227,28 @@ class _LoginScreenState extends State<LoginScreen> {
                                         title: 'password empty ',
                                         duration: Duration(seconds: 4));
                                   }
-                                  setState(() {
-                                    clicked = true;
-                                  });
-                                  var url = api.getApiUrl + "app/login";
 
-                                  var response = await http.post(url, body: {
-                                    'email': emailController.text,
-                                    'password': passwordController.text,
-                                  });
-                                  var jsonResponse =
-                                      convert.jsonDecode(response.body);
-                                  SharedPreferences prefs =
-                                      await SharedPreferences.getInstance();
-                                  prefs.setString('name', jsonResponse['name']);
-                                  prefs.setString(
-                                      'email', jsonResponse['email']);
-                                  prefs.setString(
-                                      'api_token', jsonResponse['api_token']);
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (context) => ItemSelect()),
-                                  );
+                                  (count == 3) ? showActionSnackBar() : null;
+
+                                  // var url = api.getApiUrl + "app/login";
+                                  //   count=1;
+                                  // var response = await http.post(url, body: {
+                                  //   'email': emailController.text,
+                                  //   'password': passwordController.text,
+                                  // });
+                                  // var jsonResponse =
+                                  //     convert.jsonDecode(response.body);
+                                  // SharedPreferences prefs =
+                                  //     await SharedPreferences.getInstance();
+                                  // prefs.setString('name', jsonResponse['name']);
+                                  // prefs.setString(
+                                  //     'email', jsonResponse['email']);
+                                  // prefs.setString(
+                                  //     'api_token', jsonResponse['api_token']);
+                                  // Navigator.of(context).pushReplacement(
+                                  //   MaterialPageRoute(
+                                  //       builder: (context) => ItemSelect()),
+                                  // );
                                 },
                                 color: ColorsApp().darkprimarycolor,
                                 child: Text(
@@ -300,6 +309,22 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  void showActionSnackBar() {
+    final snackBar = SnackBar(
+      backgroundColor: ColorsApp().darkprimarycolor,
+      content: Text(
+        'please wait',
+        style: TextStyle(fontSize: 16),
+      ),
+      action: SnackBarAction(
+        textColor: Colors.white,
+        label: 'Hide',
+        onPressed: () {},
+      ),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   Widget divider() {
