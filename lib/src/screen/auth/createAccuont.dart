@@ -1,6 +1,5 @@
-import 'package:bookStor/src/screen/api.dart';
-import 'package:bookStor/src/screen/bottomitem/itemselect.dart';
-
+import 'package:bookStor/src/screen/BottomNavigBar/itemselect.dart';
+import 'package:bookStor/widget/api.dart';
 import 'package:bookStor/widget/color_app.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -42,7 +41,8 @@ class _CreateAccountState extends State<CreateAccount> {
 
   @override
   void initState() {
-    gettoken();
+    getUserToken();
+    super.initState();
   }
 
   @override
@@ -106,6 +106,8 @@ class _CreateAccountState extends State<CreateAccount> {
                       ),
                     ),
                   ),
+                  //nameTextFormField
+
                   SizedBox(
                     height: 25,
                   ),
@@ -148,6 +150,8 @@ class _CreateAccountState extends State<CreateAccount> {
                       ),
                     ),
                   ),
+
+                  // emailTextFormField
                   SizedBox(
                     height: 25,
                   ),
@@ -176,7 +180,6 @@ class _CreateAccountState extends State<CreateAccount> {
                               color: ColorsApp().lightprimarycolor, width: 1),
                           borderRadius: BorderRadius.circular(25),
                         ),
-
                         prefixIcon: IconButton(
                           icon: Icon(
                             passwordVisible
@@ -198,10 +201,10 @@ class _CreateAccountState extends State<CreateAccount> {
                         hintText: " password...",
                         hintStyle: GoogleFonts.openSans(
                             color: ColorsApp().lightprimarycolor),
-
                       ),
                     ),
                   ),
+                  // passwordTextFormField
                   SizedBox(
                     height: 24,
                   ),
@@ -214,55 +217,67 @@ class _CreateAccountState extends State<CreateAccount> {
                           width: 125,
                           height: 42,
                           child: FlatButton(
-                              child: Text(
-                                'SIGN UP',
-                                style: TextStyle(
-                                  letterSpacing: 1,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
+                            child: Text(
+                              'SIGN UP',
+                              style: TextStyle(
+                                letterSpacing: 1,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
                               ),
-                              onPressed: () async {
-                                if (nameController.text.isEmpty) {
-                                  BotToast.showSimpleNotification(
-                                      title: 'Name empty ',
-                                      duration: Duration(seconds: 4));
-                                }
-                                if (emailController.text.isEmpty) {
-                                  BotToast.showSimpleNotification(
-                                      title: 'email empty ',
-                                      duration: Duration(seconds: 4));
-                                }
-                                if (passwordController.text.isEmpty) {
-                                  BotToast.showSimpleNotification(
-                                      title: 'password empty ',
-                                      duration: Duration(seconds: 4));
-                                }
+                            ),
+                            onPressed: () async {
+                              if (nameController.text.isEmpty) {
+                                BotToast.showSimpleNotification(
+                                    title: 'Name empty ',
+                                    duration: Duration(seconds: 4));
+                              }
+                              if (emailController.text.isEmpty) {
+                                BotToast.showSimpleNotification(
+                                    title: 'email empty ',
+                                    duration: Duration(seconds: 4));
+                              }
+                              if (passwordController.text.isEmpty) {
+                                BotToast.showSimpleNotification(
+                                    title: 'password empty ',
+                                    duration: Duration(seconds: 4));
+                              }
 
-                                setState(() {
-                                  clicked = true;
-                                });
-                                var url = api.getApiUrl + "app/register";
+                              setState(() {
+                                clicked = true;
+                              });
+                              var url = api.getApiUrl + "app/register";
+
+                              await getUserToken()
+                                  .then((notificationToken) async {
+                                print(notificationToken.toString());
+
                                 var response = await http.post(url, body: {
                                   'name': nameController.text,
                                   'email': emailController.text,
                                   'password': passwordController.text,
+                                  'fcm_token': notificationToken.toString()
                                 });
 
                                 var jsonResponse =
                                     convert.jsonDecode(response.body);
+
                                 SharedPreferences prefs =
                                     await SharedPreferences.getInstance();
+
                                 prefs.setString('name', jsonResponse['name']);
+
                                 prefs.setString('email', jsonResponse['email']);
+
                                 prefs.setString(
                                     'api_token', jsonResponse['api_token']);
 
                                 Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                         builder: (context) => ItemSelect()));
-                              }),
+                              });
+                            },
+                          ),
                         )
                       : Center(
                           child: CircularProgressIndicator(
@@ -270,6 +285,7 @@ class _CreateAccountState extends State<CreateAccount> {
                                 ColorsApp().primarycolor),
                           ),
                         ),
+                  // button  SIGN UP
                 ],
               ),
             ),
@@ -279,7 +295,7 @@ class _CreateAccountState extends State<CreateAccount> {
     );
   }
 
-  gettoken() async {
+  getUserToken() async {
     return await firebaseMessaging.getToken();
   }
 

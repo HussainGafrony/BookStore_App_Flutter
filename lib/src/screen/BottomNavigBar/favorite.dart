@@ -1,7 +1,12 @@
-import 'package:bookStor/src/screen/bottomitem/selectedBookScreen.dart';
+import 'package:bookStor/src/screen/BottomNavigBar/Card.dart';
+import 'package:bookStor/src/screen/prodactItem/bookContent.dart';
+import 'package:bookStor/widget/api.dart';
 import 'package:bookStor/widget/color_app.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert' as convert;
+import 'package:http/http.dart' as http;
 
 class Favorite extends StatefulWidget {
   @override
@@ -9,12 +14,19 @@ class Favorite extends StatefulWidget {
 }
 
 class _FavoriteState extends State<Favorite> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Favorite'),
         centerTitle: false,
         backgroundColor: ColorsApp().primarycolor,
+        automaticallyImplyLeading: false,
       ),
       body: ListView.builder(
           padding: EdgeInsets.only(
@@ -24,7 +36,7 @@ class _FavoriteState extends State<Favorite> {
           ),
           physics: BouncingScrollPhysics(),
           // shrinkWrap: true,
-          itemCount: 24,
+          itemCount: CardPage.card.length,
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
@@ -61,32 +73,41 @@ class _FavoriteState extends State<Favorite> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Hussain Gafrony',
-                            style: GoogleFonts.openSans(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: ColorsApp().primarycolor),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Container(
+                              // color: Colors.red,
+                              width: MediaQuery.of(context).size.width * 0.35,
+                              child: Text(
+                                CardPage.card[index]['bookname'],
+                                style: GoogleFonts.openSans(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: ColorsApp().primarycolor),
+                                maxLines: 2,
+                              ),
+                            ),
                           ),
                           SizedBox(
                             height: 5,
                           ),
-                          Text(
-                            'Hasan Gafrony',
-                            style: GoogleFonts.openSans(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w400,
-                                color: ColorsApp().darkprimarycolor),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            '\$\ 45 ',
-                            style: GoogleFonts.openSans(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: ColorsApp().lightprimarycolor),
+                          Row(
+                            children: [
+                              Text(
+                                '\$',
+                                style: GoogleFonts.openSans(
+                                    fontSize: 16,
+                                    color: ColorsApp().primarycolor,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              Text(
+                                CardPage.card[index]['price'].toString(),
+                                style: GoogleFonts.openSans(
+                                    fontSize: 16,
+                                    color: ColorsApp().lightprimarycolor,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ],
                           ),
                         ],
                       ),

@@ -8,13 +8,7 @@ class About extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        // appBar: AppBar(
-        //   title: Text('About',
-        //       style: GoogleFonts.openSans(color: ColorsApp().darkprimarycolor)),
-        //   elevation: 0,
-        //   centerTitle: true,
-        //   backgroundColor: Colors.white,
-        // ),
+
         body: Stack(
           children: [
             Container(

@@ -20,9 +20,7 @@ class _MapsState extends State<Maps> {
   void initState() {
     super.initState();
 
-    getUserLocation().then((_) async {
-      await getUserAndLocation();
-    });
+    getUserLocation();
   }
 
   @override
@@ -53,33 +51,36 @@ class _MapsState extends State<Maps> {
       ),
     );
   }
-
+    // Location User
   getUserLocation() async {
     Location location = new Location();
     var userLocation = await location.getLocation();
     setState(() {
       userLocationData = LatLng(userLocation.latitude, userLocation.longitude);
     });
-
-    //print("${LocationData.toString()}");
   }
 
-  getUserAndLocation() async {
-    await FirebaseFirestore.instance.collection('users').get().then((value) {
-      value.docChanges.forEach((element) {
-        setState(() {
-          dataMarker.add(
-            Marker(
-              markerId: MarkerId(element.doc.id),
-              infoWindow: InfoWindow(
-                title: element.doc.data()['name'].toString(),
-              ),
-              position: LatLng(element.doc.data()['location'].latitude,
-                  element.doc.data()['location'].longitude),
-            ),
-          );
-        });
-      });
-    });
-  }
+
+// Markers realtime
+
+// getUserAndLocation() async {
+//   await FirebaseFirestore.instance.collection('users').get().then((value) {
+//     value.docChanges.forEach((element) {
+//       setState(() {
+//         dataMarker.add(
+//           Marker(
+//             markerId: MarkerId(element.doc.id),
+//             infoWindow: InfoWindow(
+//               title: element.doc.data()['name'].toString(),
+//             ),
+//             position: LatLng(element.doc.data()['location'].latitude,
+//                 element.doc.data()['location'].longitude),
+//           ),
+//         );
+//       });
+//     });
+//   });
+// }
+
+
 }

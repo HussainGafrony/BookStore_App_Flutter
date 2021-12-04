@@ -1,6 +1,7 @@
-import 'package:bookStor/src/screen/api.dart';
+import 'package:bookStor/src/screen/BottomNavigBar/itemselect.dart';
+import 'package:bookStor/widget/api.dart';
 import 'package:bookStor/src/screen/auth/createAccuont.dart';
-import 'package:bookStor/src/screen/bottomitem/itemselect.dart';
+
 import 'package:bookStor/widget/color_app.dart';
 import 'package:bot_toast/bot_toast.dart';
 
@@ -135,6 +136,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+                    // emailTextFormField
+
                     SizedBox(
                       height: 20,
                     ),
@@ -188,6 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+                    // emailTextFormField
                     Padding(
                       padding: const EdgeInsets.only(left: 180),
                       child: FlatButton(
@@ -213,11 +217,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 onPressed: () async {
 
-                                  setState(() {
-
-                                    clicked = true;
-                                    count++;
-                                  });
                                   if (emailController.text.isEmpty) {
                                     BotToast.showSimpleNotification(
                                         title: 'email empty ',
@@ -227,28 +226,32 @@ class _LoginScreenState extends State<LoginScreen> {
                                         title: 'password empty ',
                                         duration: Duration(seconds: 4));
                                   }
+                                  setState(() {
+                                    clicked =true;
+                                  });
+                                  var url = api.getApiUrl + "app/login";
 
-                                  (count == 3) ? showActionSnackBar() : null;
+                                  var response = await http.post(url, body: {
+                                    'email': emailController.text,
+                                    'password': passwordController.text,
+                                  });
 
-                                  // var url = api.getApiUrl + "app/login";
-                                  //   count=1;
-                                  // var response = await http.post(url, body: {
-                                  //   'email': emailController.text,
-                                  //   'password': passwordController.text,
-                                  // });
-                                  // var jsonResponse =
-                                  //     convert.jsonDecode(response.body);
-                                  // SharedPreferences prefs =
-                                  //     await SharedPreferences.getInstance();
-                                  // prefs.setString('name', jsonResponse['name']);
-                                  // prefs.setString(
-                                  //     'email', jsonResponse['email']);
-                                  // prefs.setString(
-                                  //     'api_token', jsonResponse['api_token']);
-                                  // Navigator.of(context).pushReplacement(
-                                  //   MaterialPageRoute(
-                                  //       builder: (context) => ItemSelect()),
-                                  // );
+                                  var jsonResponse =
+                                      convert.jsonDecode(response.body);
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  prefs.setString('name', jsonResponse['name']);
+                                  prefs.setString(
+                                      'email', jsonResponse['email']);
+                                  prefs.setString(
+                                      'api_token', jsonResponse['api_token']);
+
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (context) => ItemSelect()),
+                                  );
+
+
                                 },
                                 color: ColorsApp().darkprimarycolor,
                                 child: Text(
@@ -269,6 +272,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                       ),
                     ),
+                    // Sign in
                     SizedBox(
                       height: 1,
                     ),
@@ -311,21 +315,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void showActionSnackBar() {
-    final snackBar = SnackBar(
-      backgroundColor: ColorsApp().darkprimarycolor,
-      content: Text(
-        'please wait',
-        style: TextStyle(fontSize: 16),
-      ),
-      action: SnackBarAction(
-        textColor: Colors.white,
-        label: 'Hide',
-        onPressed: () {},
-      ),
-    );
-    _scaffoldKey.currentState.showSnackBar(snackBar);
-  }
 
   Widget divider() {
     return Container(

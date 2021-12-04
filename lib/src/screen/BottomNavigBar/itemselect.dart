@@ -1,8 +1,8 @@
-import 'package:bookStor/src/screen/bottomitem/category.dart';
-import 'package:bookStor/src/screen/bottomitem/favorite.dart';
-import 'package:bookStor/src/screen/bottomitem/homescreen.dart';
+import 'package:bookStor/src/screen/BottomNavigBar/Card.dart';
+import 'package:bookStor/src/screen/BottomNavigBar/category.dart';
+import 'package:bookStor/src/screen/BottomNavigBar/favorite.dart';
+import 'package:bookStor/src/screen/BottomNavigBar/homescreen.dart';
 
-import 'package:bookStor/src/screen/bottomitem/Card.dart';
 import 'package:bookStor/widget/color_app.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +21,7 @@ class _ItemSelectState extends State<ItemSelect> {
     return Scaffold(
       body: listscreen[tabindex],
       bottomNavigationBar: BottomNavigationBar(
+
         type: BottomNavigationBarType.fixed,
         backgroundColor: ColorsApp().primarycolor,
         onTap: (int index) {
